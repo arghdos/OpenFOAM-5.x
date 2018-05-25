@@ -23,6 +23,7 @@ License
 
 \*---------------------------------------------------------------------------*/
 
+#include <mpi.h>
 #include "StandardChemistryModel.H"
 #include "reactingMixture.H"
 #include "UniformField.H"
@@ -110,6 +111,7 @@ void Foam::StandardChemistryModel<ReactionThermo, ThermoType>::omega
 ) const
 {
 
+    MPI_Pcontrol(1, "species_rates");
     dcdt = Zero;
 
     forAll(reactions_, i)
@@ -118,6 +120,8 @@ void Foam::StandardChemistryModel<ReactionThermo, ThermoType>::omega
 
         R.omega(p, T, c, dcdt);
     }
+
+    MPI_Pcontrol(-1, "species_rates");
 }
 
 
@@ -150,6 +154,7 @@ void Foam::StandardChemistryModel<ReactionThermo, ThermoType>::derivatives
     scalarField& dcdt
 ) const
 {
+    MPI_Pcontrol(1, "dydt");
     const scalar T = c[nSpecie_];
     const scalar p = c[nSpecie_ + 1];
 
@@ -189,6 +194,7 @@ void Foam::StandardChemistryModel<ReactionThermo, ThermoType>::derivatives
 
     // dp/dt = ...
     dcdt[nSpecie_ + 1] = 0;
+    MPI_Pcontrol(-1, "dydt");
 }
 
 
@@ -201,6 +207,7 @@ void Foam::StandardChemistryModel<ReactionThermo, ThermoType>::jacobian
     scalarSquareMatrix& J
 ) const
 {
+    MPI_Pcontrol(1, "jacobian");
     const scalar T = c[nSpecie_];
     const scalar p = c[nSpecie_ + 1];
 
@@ -267,6 +274,7 @@ void Foam::StandardChemistryModel<ReactionThermo, ThermoType>::jacobian
     J(nSpecie_, nSpecie_) += dTdt*dcpdTMean;
     J(nSpecie_, nSpecie_) /= -cpMean;
     J(nSpecie_, nSpecie_) += dTdt/T;
+    MPI_Pcontrol(-1, "jacobian");
 }
 
 
@@ -274,6 +282,7 @@ template<class ReactionThermo, class ThermoType>
 Foam::tmp<Foam::volScalarField>
 Foam::StandardChemistryModel<ReactionThermo, ThermoType>::tc() const
 {
+    MPI_Pcontrol(1, "chemical_time_scale");
     tmp<volScalarField> ttc
     (
         new volScalarField
@@ -340,6 +349,7 @@ Foam::StandardChemistryModel<ReactionThermo, ThermoType>::tc() const
 
     ttc.ref().correctBoundaryConditions();
 
+    MPI_Pcontrol(-1, "chemical_time_scale");
     return ttc;
 }
 
@@ -348,6 +358,7 @@ template<class ReactionThermo, class ThermoType>
 Foam::tmp<Foam::volScalarField>
 Foam::StandardChemistryModel<ReactionThermo, ThermoType>::Qdot() const
 {
+    MPI_Pcontrol(1, "heat_release_rate");
     tmp<volScalarField> tQdot
     (
         new volScalarField
@@ -380,6 +391,7 @@ Foam::StandardChemistryModel<ReactionThermo, ThermoType>::Qdot() const
         }
     }
 
+    MPI_Pcontrol(-1, "heat_release_rate");
     return tQdot;
 }
 
@@ -392,6 +404,7 @@ Foam::StandardChemistryModel<ReactionThermo, ThermoType>::calculateRR
     const label si
 ) const
 {
+    MPI_Pcontrol(1, "rr_for_species");
     tmp<volScalarField::Internal> tRR
     (
         new volScalarField::Internal
@@ -454,6 +467,7 @@ Foam::StandardChemistryModel<ReactionThermo, ThermoType>::calculateRR
         RR[celli] *= specieThermo_[si].W();
     }
 
+    MPI_Pcontrol(-1, "rr_for_species");
     return tRR;
 }
 
@@ -465,6 +479,8 @@ void Foam::StandardChemistryModel<ReactionThermo, ThermoType>::calculate()
     {
         return;
     }
+
+    MPI_Pcontrol(1, "reaction_rate");
 
     tmp<volScalarField> trho(this->thermo().rho());
     const scalarField& rho = trho();
@@ -491,6 +507,7 @@ void Foam::StandardChemistryModel<ReactionThermo, ThermoType>::calculate()
             RR_[i][celli] = dcdt_[i]*specieThermo_[i].W();
         }
     }
+    MPI_Pcontrol(-1, "reaction_rate");
 }
 
 
@@ -502,6 +519,7 @@ Foam::scalar Foam::StandardChemistryModel<ReactionThermo, ThermoType>::solve
 )
 {
     BasicChemistryModel<ReactionThermo>::correct();
+    MPI_Pcontrol(1, "chemistry_solve");
 
     scalar deltaTMin = great;
 
@@ -564,6 +582,7 @@ Foam::scalar Foam::StandardChemistryModel<ReactionThermo, ThermoType>::solve
         }
     }
 
+    MPI_Pcontrol(-1, "chemistry_solve");
     return deltaTMin;
 }
 

@@ -1,3 +1,6 @@
+sinclude $(GENERAL_RULES)/mplib$(WM_MPLIB)
+sinclude $(RULES)/mplib$(WM_MPLIB)
+
 EXE_INC = \
     -I$(LIB_SRC)/finiteVolume/lnInclude \
     -I$(LIB_SRC)/meshTools/lnInclude \
@@ -25,4 +28,9 @@ EXE_LIBS = \
     -lfluidThermophysicalModels \
     -lchemistryModel \
     -lODE \
-    -lcombustionModels
+    -lcombustionModels \
+    -L$(IPM_LIBPATH) \
+    -lipm \
+    -L$(OMP_LIB_PATH) \
+    -lmpi_cxx \
+    -lmpi
