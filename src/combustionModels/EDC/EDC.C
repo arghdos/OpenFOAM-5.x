@@ -23,6 +23,7 @@ License
 
 \*---------------------------------------------------------------------------*/
 
+#include "mpi.h"
 #include "EDC.H"
 
 // * * * * * * * * * * * * * * * * Constructors  * * * * * * * * * * * * * * //
@@ -82,6 +83,7 @@ Foam::combustionModels::EDC<Type>::~EDC()
 template<class Type>
 void Foam::combustionModels::EDC<Type>::correct()
 {
+    MPI_Pcontrol(1, "EDC_correct");
     if (this->active())
     {
         tmp<volScalarField> tepsilon(this->turbulence().epsilon());
@@ -171,6 +173,7 @@ void Foam::combustionModels::EDC<Type>::correct()
 
         this->chemistryPtr_->solve(tauStar);
     }
+    MPI_Pcontrol(-1, "EDC_correct");
 }
 
 
@@ -178,7 +181,10 @@ template<class Type>
 Foam::tmp<Foam::fvScalarMatrix>
 Foam::combustionModels::EDC<Type>::R(volScalarField& Y) const
 {
-    return kappa_*laminar<Type>::R(Y);
+    MPI_Pcontrol(1, "EDC_fuel_consumption");
+    Foam::tmp<Foam::fvScalarMatrix> R = kappa_*laminar<Type>::R(Y);
+    MPI_Pcontrol(-1, "EDC_fuel_consumption");
+    return R;
 }
 
 
@@ -186,6 +192,7 @@ template<class Type>
 Foam::tmp<Foam::volScalarField>
 Foam::combustionModels::EDC<Type>::Qdot() const
 {
+    MPI_Pcontrol(1, "EDC_heat_release_rate");
     tmp<volScalarField> tQdot
     (
         new volScalarField
@@ -208,6 +215,8 @@ Foam::combustionModels::EDC<Type>::Qdot() const
     {
         tQdot.ref() = kappa_*this->chemistryPtr_->Qdot();
     }
+
+    MPI_Pcontrol(-1, "EDC_heat_release_rate");
 
     return tQdot;
 }

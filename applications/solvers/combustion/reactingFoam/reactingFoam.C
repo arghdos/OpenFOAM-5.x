@@ -29,6 +29,7 @@ Description
 
 \*---------------------------------------------------------------------------*/
 
+#include "mpi.h"
 #include "fvCFD.H"
 #include "turbulentFluidThermoModel.H"
 #include "psiCombustionModel.H"
@@ -69,6 +70,7 @@ int main(int argc, char *argv[])
 
     while (runTime.run())
     {
+        MPI_Pcontrol(1, "time_loop");
         #include "readTimeControls.H"
 
         if (LTS)
@@ -85,14 +87,23 @@ int main(int argc, char *argv[])
 
         Info<< "Time = " << runTime.timeName() << nl << endl;
 
+        MPI_Pcontrol(1, "fluid_solve");
         #include "rhoEqn.H"
 
         while (pimple.loop())
         {
+            MPI_Pcontrol(1, "momentum_solve");
             #include "UEqn.H"
+            MPI_Pcontrol(-1, "momentum_solve");
+            MPI_Pcontrol(1, "species_solve");
             #include "YEqn.H"
+            MPI_Pcontrol(-1, "species_solve");
+            MPI_Pcontrol(1, "energy_solve");
             #include "EEqn.H"
+            MPI_Pcontrol(-1, "energy_solve");
 
+
+            MPI_Pcontrol(1, "pressure_solve");
             // --- Pressure corrector loop
             while (pimple.correct())
             {
@@ -110,15 +121,19 @@ int main(int argc, char *argv[])
             {
                 turbulence->correct();
             }
+            MPI_Pcontrol(-1, "pressure_solve");
         }
 
         rho = thermo.rho();
+        MPI_Pcontrol(-1, "fluid_solve");
 
         runTime.write();
 
         Info<< "ExecutionTime = " << runTime.elapsedCpuTime() << " s"
             << "  ClockTime = " << runTime.elapsedClockTime() << " s"
             << nl << endl;
+
+        MPI_Pcontrol(-1, "time_loop");
     }
 
     Info<< "End\n" << endl;
