@@ -1,10 +1,12 @@
-#pragma once
+#ifndef STOPWATCH_H
+#define STOPWATCH_H
 
 #include "string.H"
 #include "clockTime.H"
 
 namespace Foam
 {
+
     class StopWatch
     {
         private:
@@ -35,4 +37,7 @@ namespace Foam
                 return this->_name;
             }
     };
+
 }
+
+#endif

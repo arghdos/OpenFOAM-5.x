@@ -1,3 +1,6 @@
+#ifndef CUSTOMTIMERS_H
+#define CUSTOMTIMERS_H
+
 //declare timers
 #include "StopWatch.H"
 extern Foam::StopWatch totalTime;
@@ -32,3 +35,5 @@ extern Foam::StopWatch JacobianEvalTime;
 extern Foam::StopWatch dYdTEvalTime;
 extern Foam::StopWatch ReactionRateEvalTime;
 extern Foam::StopWatch OmegaEvalTime;
+
+#endif
