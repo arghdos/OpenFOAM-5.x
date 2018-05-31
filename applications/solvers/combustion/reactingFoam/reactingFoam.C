@@ -85,24 +85,24 @@ int main(int argc, char *argv[])
     Info<< "\nStarting time loop\n" << endl;
 
     //declare timers
-    Foam::StopWatch totalTime("total runtime");
-    Foam::StopWatch mainLoopTime("main time-loop");
-    Foam::StopWatch readControlsTime("read controls");
-    Foam::StopWatch setDeltaTTime("set timestep");
-    Foam::StopWatch pimpleTime("pimple loop");
-    Foam::StopWatch RhoEqnTime("density equation");
-    Foam::StopWatch UEqnTime("velocity equations");
-    Foam::StopWatch YEqnTime("species equations");
-    Foam::StopWatch EEqnTime("energy equation");
-    Foam::StopWatch pEqnTime("pressure equation");
-    Foam::StopWatch turbEqnTime("turbulence equation");
-    Foam::StopWatch writeTime("write time");
-    Foam::StopWatch rhoFetchTime("read density");
-    Foam::StopWatch YConvectionTime("species convection initialization");
-    Foam::StopWatch CombustionModelTime("combustion mode evaluation");
-    Foam::StopWatch HeatReleaseTime("(outer) heat release evaluation");
-    Foam::StopWatch SetYInertTime("inert species handling");
-    Foam::StopWatch YLoopTime("species loop solution");
+    Foam::StopWatch totalTime(Foam::string("total runtime"));
+    Foam::StopWatch mainLoopTime(Foam::string("main time-loop"));
+    Foam::StopWatch readControlsTime(Foam::string("read controls"));
+    Foam::StopWatch setDeltaTTime(Foam::string("set timestep"));
+    Foam::StopWatch pimpleTime(Foam::string("pimple loop"));
+    Foam::StopWatch RhoEqnTime(Foam::string("density equation"));
+    Foam::StopWatch UEqnTime(Foam::string("velocity equations"));
+    Foam::StopWatch YEqnTime(Foam::string("species equations"));
+    Foam::StopWatch EEqnTime(Foam::string("energy equation"));
+    Foam::StopWatch pEqnTime(Foam::string("pressure equation"));
+    Foam::StopWatch turbEqnTime(Foam::string("turbulence equation"));
+    Foam::StopWatch writeTime(Foam::string("write time"));
+    Foam::StopWatch rhoFetchTime(Foam::string("read density"));
+    Foam::StopWatch YConvectionTime(Foam::string("species convection initialization"));
+    Foam::StopWatch CombustionModelTime(Foam::string("combustion mode evaluation"));
+    Foam::StopWatch HeatReleaseTime(Foam::string("(outer) heat release evaluation"));
+    Foam::StopWatch SetYInertTime(Foam::string("inert species handling"));
+    Foam::StopWatch YLoopTime(Foam::string("species loop solution"));
     List<Foam::StopWatch> TimerList({
         totalTime,
         mainLoopTime,

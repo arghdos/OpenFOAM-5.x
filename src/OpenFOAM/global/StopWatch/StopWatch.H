@@ -1,6 +1,6 @@
 #pragma once
 
-#include <string.h>
+#include "string.H"
 #include "clockTime.H"
 
 namespace Foam
@@ -8,11 +8,11 @@ namespace Foam
     class StopWatch
     {
         private:
-            std::string _name;
+            string _name;
             clockTime timer;
             double totalTime;
         public:
-            StopWatch(std::string myname)
+            StopWatch(string myname)
             {
                 this->totalTime = 0;
                 this->_name = myname;
@@ -30,7 +30,7 @@ namespace Foam
             {
                 return this->totalTime;
             }
-            std::string name() const
+            string name() const
             {
                 return this->_name;
             }

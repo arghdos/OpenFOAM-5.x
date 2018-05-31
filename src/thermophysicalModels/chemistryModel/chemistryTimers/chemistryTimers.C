@@ -26,12 +26,12 @@ License
 #include "CustomTimers.H"
 
 // create timers
-Foam::StopWatch QDotEvalTime("heat-release rate evaluation");
+Foam::StopWatch QDotEvalTime(Foam::string("heat-release rate evaluation"));
 //- chemical time scale eval
-Foam::StopWatch TCEvalTime("chemical time-scale evaluation");
+Foam::StopWatch TCEvalTime(Foam::string("chemical time-scale evaluation"));
 // ODE-solver timers
-Foam::StopWatch ODESolveTime("ode integration");
-Foam::StopWatch JacobianEvalTime("jacobian evaluation");
-Foam::StopWatch dYdTEvalTime("dydt evaluation");
-Foam::StopWatch ReactionRateEvalTime("reaction rate evaluation");
-Foam::StopWatch OmegaEvalTime("species rate evaluation");
+Foam::StopWatch ODESolveTime(Foam::string("ode integration"));
+Foam::StopWatch JacobianEvalTime(Foam::string("jacobian evaluation"));
+Foam::StopWatch dYdTEvalTime(Foam::string("dydt evaluation"));
+Foam::StopWatch ReactionRateEvalTime(Foam::string("reaction rate evaluation"));
+Foam::StopWatch OmegaEvalTime(Foam::string("species rate evaluation"));
