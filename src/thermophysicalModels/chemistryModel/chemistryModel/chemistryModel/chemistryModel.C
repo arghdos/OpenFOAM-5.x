@@ -31,17 +31,6 @@ License
 
 // * * * * * * * * * * * * * * * * Constructors  * * * * * * * * * * * * * * //
 
-// create timers
-Foam::StopWatch QDotEvalTime("heat-release rate evaluation");
-//- chemical time scale eval
-Foam::StopWatch TCEvalTime("chemical time-scale evaluation");
-// ODE-solver timers
-Foam::StopWatch ODESolveTime("ode integration");
-Foam::StopWatch JacobianEvalTime("jacobian evaluation");
-Foam::StopWatch dYdTEvalTime("dydt evaluation");
-Foam::StopWatch ReactionRateEvalTime("reaction rate evaluation");
-Foam::StopWatch OmegaEvalTime("species rate evaluation");
-
 template<class CompType, class ThermoType>
 Foam::chemistryModel<CompType, ThermoType>::chemistryModel
 (

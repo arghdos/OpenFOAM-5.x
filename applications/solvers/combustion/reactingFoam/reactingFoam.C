@@ -103,6 +103,16 @@ int main(int argc, char *argv[])
     Foam::StopWatch HeatReleaseTime("(outer) heat release evaluation");
     Foam::StopWatch SetYInertTime("inert species handling");
     Foam::StopWatch YLoopTime("species loop solution");
+    // create timers
+    Foam::StopWatch QDotEvalTime("heat-release rate evaluation");
+    //- chemical time scale eval
+    Foam::StopWatch TCEvalTime("chemical time-scale evaluation");
+    // ODE-solver timers
+    Foam::StopWatch ODESolveTime("ode integration");
+    Foam::StopWatch JacobianEvalTime("jacobian evaluation");
+    Foam::StopWatch dYdTEvalTime("dydt evaluation");
+    Foam::StopWatch ReactionRateEvalTime("reaction rate evaluation");
+    Foam::StopWatch OmegaEvalTime("species rate evaluation");
     List<Foam::StopWatch> TimerList({
         totalTime,
         mainLoopTime,
@@ -120,6 +130,8 @@ int main(int argc, char *argv[])
         YConvectionTime,
         CombustionModelTime,
         HeatReleaseTime,
+        SetYInertTime,
+        QDotEvalTime,
         YLoopTime,
         TCEvalTime,
         ODESolveTime,
