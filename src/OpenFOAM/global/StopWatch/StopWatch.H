@@ -30,7 +30,7 @@ namespace Foam
             {
                 return this->totalTime;
             }
-            std::str name() const
+            std::string name() const
             {
                 return this->name;
             }

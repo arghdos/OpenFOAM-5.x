@@ -42,11 +42,11 @@ Description
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
-void print_timers(List<StopWatch>& const watches, std::bool normalize=false)
+void print_timers(List<Foam::StopWatch>& const watches, std::bool normalize=false)
 {
     totalTime = watches.begin().getTotalTime();
     Info<<"Time Profile: ";
-    for (List<StopWatch>::const_iterator it = watches.begin() + 1; it != watches.end(); ++it)
+    for (List<Foam::StopWatch>::const_iterator it = watches.begin() + 1; it != watches.end(); ++it)
     {
         double time = it->getTotalTime();
         if (normalize)
@@ -85,31 +85,31 @@ int main(int argc, char *argv[])
     Info<< "\nStarting time loop\n" << endl;
 
     //declare timers
-    StopWatch totalTime;
-    StopWatch mainLoopTime;
-    StopWatch readControlsTime;
-    StopWatch setDeltaTTime;
-    StopWatch pimpleTime;
-    StopWatch RhoEqnTime;
-    StopWatch UEqnTime;
-    StopWatch YEqnTime;
-    StopWatch EEqnTime;
-    StopWatch pEqnTime;
-    StopWatch turbEqnTime;
-    StopWatch writeTime;
-    StopWatch infoTime;
-    StopWatch rhoFetchTime;
-    StopWatch YConvectionTime;
-    StopWatch CombustionModelTime;
-    StopWatch HeatReleaseTime;
-    StopWatch QDotEvalTime;
-    StopWatch SetYInertTime;
-    StopWatch YLoopTime;
-    StopWatch TCEvalTime;
-    StopWatch ODESolveTime;
-    StopWatch JacobianEvalTime;
-    StopWatch dYdTEvalTime;
-    List<StopWatch> TimerList({
+    Foam::StopWatch totalTime;
+    Foam::StopWatch mainLoopTime;
+    Foam::StopWatch readControlsTime;
+    Foam::StopWatch setDeltaTTime;
+    Foam::StopWatch pimpleTime;
+    Foam::StopWatch RhoEqnTime;
+    Foam::StopWatch UEqnTime;
+    Foam::StopWatch YEqnTime;
+    Foam::StopWatch EEqnTime;
+    Foam::StopWatch pEqnTime;
+    Foam::StopWatch turbEqnTime;
+    Foam::StopWatch writeTime;
+    Foam::StopWatch infoTime;
+    Foam::StopWatch rhoFetchTime;
+    Foam::StopWatch YConvectionTime;
+    Foam::StopWatch CombustionModelTime;
+    Foam::StopWatch HeatReleaseTime;
+    Foam::StopWatch QDotEvalTime;
+    Foam::StopWatch SetYInertTime;
+    Foam::StopWatch YLoopTime;
+    Foam::StopWatch TCEvalTime;
+    Foam::StopWatch ODESolveTime;
+    Foam::StopWatch JacobianEvalTime;
+    Foam::StopWatch dYdTEvalTime;
+    List<Foam::StopWatch> TimerList({
         totalTime,
         mainLoopTime,
         readControlsTime,
