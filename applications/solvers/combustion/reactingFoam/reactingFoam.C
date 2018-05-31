@@ -52,8 +52,12 @@ void print_timers(List<StopWatch>& watches, bool normalize=false)
         if (normalize)
         {
             time = (time / totalTime) * 100.0;
+            Info<<"\n\t" << it->name() << " (%):" << time;
         }
-        Info<<"\n\t" << it->name() << " (s):" << time;
+        else
+        {
+            Info<<"\n\t" << it->name() << " (s):" << time;
+        }
     }
     Info<<endl;
 }
