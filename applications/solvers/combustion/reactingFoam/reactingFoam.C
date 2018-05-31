@@ -270,6 +270,8 @@ int main(int argc, char *argv[])
         runTime.write();
         writeTime.stop();
 
+        mainLoopTime.stop();
+
         print_timers(TimerList, false);
         Info<< "ExecutionTime = " << runTime.elapsedCpuTime() << " s"
             << "  ClockTime = " << runTime.elapsedClockTime() << " s"
