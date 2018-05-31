@@ -42,9 +42,9 @@ Description
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
-void print_timers(List<Foam::StopWatch>& const watches, std::bool normalize=false)
+void print_timers(List<Foam::StopWatch>& watches, bool normalize=false)
 {
-    totalTime = watches.begin().getTotalTime();
+    double totalTime = watches.begin().getTotalTime();
     Info<<"Time Profile: ";
     for (List<Foam::StopWatch>::const_iterator it = watches.begin() + 1; it != watches.end(); ++it)
     {

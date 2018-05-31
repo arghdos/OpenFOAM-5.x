@@ -1,10 +1,11 @@
 #ifndef CUSTOMTIMERS_H
 #define CUSTOMTIMERS_H
 
+#include "StopWatch.H"
+
 //declare timers
 namespace Foam
 {
-    class StopWatch;
     extern StopWatch totalTime;
     extern StopWatch mainLoopTime;
     extern StopWatch readControlsTime;
