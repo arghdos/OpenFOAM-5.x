@@ -13,6 +13,6 @@ chemistrySolver/chemistrySolver/makeChemistrySolvers.C
 
 functionObjects/specieReactionRates/specieReactionRates.C
 
-chemistryTimers/chemistryTimer.C
+chemistryTimers/chemistryTimers.C
 
 LIB = $(FOAM_LIBBIN)/libchemistryModel
