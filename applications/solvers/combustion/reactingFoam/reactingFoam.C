@@ -53,7 +53,7 @@ void print_timers(List<StopWatch>& watches, bool normalize=false)
         {
             time = (time / totalTime) * 100.0;
         }
-        Info<<"\n\t" << it->name << " (s):" << time;
+        Info<<"\n\t" << it->name() << " (s):" << time;
     }
     Info<<endl;
 }
@@ -260,7 +260,7 @@ int main(int argc, char *argv[])
 
         rhoFetchTime.start();
         rho = thermo.rho();
-        rhoFetchTime.end();
+        rhoFetchTime.stop();
 
         writeTime.start();
         runTime.write();
