@@ -10,7 +10,7 @@ namespace Foam
     {
         private:
             string _name;
-            clock timer;
+            clockTime timer;
             double totalTime;
         public:
             StopWatch()
