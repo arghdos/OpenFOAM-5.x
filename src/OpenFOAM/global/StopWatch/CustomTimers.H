@@ -2,7 +2,7 @@
 #define CUSTOMTIMERS_H
 
 //declare timers
-#include "StopWatch.H"
+class Foam::StopWatch;
 extern Foam::StopWatch totalTime;
 extern Foam::StopWatch mainLoopTime;
 extern Foam::StopWatch readControlsTime;
