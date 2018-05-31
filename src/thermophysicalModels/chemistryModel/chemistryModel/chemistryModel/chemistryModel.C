@@ -27,6 +27,7 @@ License
 #include "reactingMixture.H"
 #include "UniformField.H"
 #include "extrapolatedCalculatedFvPatchFields.H"
+#include "CustomTimers.H"
 
 // * * * * * * * * * * * * * * * * Constructors  * * * * * * * * * * * * * * //
 
@@ -105,6 +106,7 @@ void Foam::chemistryModel<CompType, ThermoType>::omega
     scalar pf, cf, pr, cr;
     label lRef, rRef;
 
+    OmegaEvalTime.start();
     dcdt = Zero;
 
     forAll(reactions_, i)
@@ -130,6 +132,7 @@ void Foam::chemistryModel<CompType, ThermoType>::omega
             dcdt[si] += sr*omegai;
         }
     }
+    OmegaEvalTime.end();
 }
 
 
@@ -277,6 +280,7 @@ void Foam::chemistryModel<CompType, ThermoType>::derivatives
     const scalar T = c[nSpecie_];
     const scalar p = c[nSpecie_ + 1];
 
+    dYdTEvalTime.start();
     for (label i = 0; i < nSpecie_; i++)
     {
         c_[i] = max(0.0, c[i]);
@@ -313,6 +317,7 @@ void Foam::chemistryModel<CompType, ThermoType>::derivatives
 
     // dp/dt = ...
     dcdt[nSpecie_ + 1] = 0.0;
+    dYdTEvalTime.stop();
 }
 
 
@@ -328,6 +333,7 @@ void Foam::chemistryModel<CompType, ThermoType>::jacobian
     const scalar T = c[nSpecie_];
     const scalar p = c[nSpecie_ + 1];
 
+    JacobianEvalTime.start();
     forAll(c_, i)
     {
         c_[i] = max(c[i], 0.0);
@@ -455,6 +461,8 @@ void Foam::chemistryModel<CompType, ThermoType>::jacobian
 
     dfdc(nSpecie_, nSpecie_) = 0;
     dfdc(nSpecie_ + 1, nSpecie_) = 0;
+
+    JacobianEvalTime.stop();
 }
 
 
@@ -494,6 +502,7 @@ Foam::chemistryModel<CompType, ThermoType>::tc() const
     scalar pf, cf, pr, cr;
     label lRef, rRef;
 
+    TCEvalTime.start();
     if (this->chemistry_)
     {
         forAll(rho, celli)
@@ -527,6 +536,7 @@ Foam::chemistryModel<CompType, ThermoType>::tc() const
     }
 
     ttc.ref().correctBoundaryConditions();
+    TCEvalTime.stop();
 
     return ttc;
 }
@@ -536,6 +546,7 @@ template<class CompType, class ThermoType>
 Foam::tmp<Foam::volScalarField>
 Foam::chemistryModel<CompType, ThermoType>::Qdot() const
 {
+    QDotEvalTime.start();
     tmp<volScalarField> tQdot
     (
         new volScalarField
@@ -567,6 +578,7 @@ Foam::chemistryModel<CompType, ThermoType>::Qdot() const
             }
         }
     }
+    QDotEvalTime.stop();
 
     return tQdot;
 }
@@ -608,6 +620,7 @@ Foam::chemistryModel<CompType, ThermoType>::calculateRR
     const scalarField& T = this->thermo().T();
     const scalarField& p = this->thermo().p();
 
+    ReactionRateEvalTime.start();
     forAll(rho, celli)
     {
         const scalar rhoi = rho[celli];
@@ -636,6 +649,7 @@ Foam::chemistryModel<CompType, ThermoType>::calculateRR
 
         RR[celli] = w*specieThermo_[si].W();
     }
+    ReactionRateEvalTime.stop();
 
     return tRR;
 }
@@ -655,6 +669,7 @@ void Foam::chemistryModel<CompType, ThermoType>::calculate()
     const scalarField& T = this->thermo().T();
     const scalarField& p = this->thermo().p();
 
+    ReactionRateEvalTime.start();
     forAll(rho, celli)
     {
         const scalar rhoi = rho[celli];
@@ -674,6 +689,7 @@ void Foam::chemistryModel<CompType, ThermoType>::calculate()
             RR_[i][celli] = dcdt_[i]*specieThermo_[i].W();
         }
     }
+    ReactionRateEvalTime.stop();
 }
 
 
@@ -701,6 +717,7 @@ Foam::scalar Foam::chemistryModel<CompType, ThermoType>::solve
 
     scalarField c0(nSpecie_);
 
+    ODESolveTime.start();
     forAll(rho, celli)
     {
         scalar Ti = T[celli];
@@ -743,6 +760,7 @@ Foam::scalar Foam::chemistryModel<CompType, ThermoType>::solve
             }
         }
     }
+    ODESolveTime.stop();
 
     return deltaTMin;
 }

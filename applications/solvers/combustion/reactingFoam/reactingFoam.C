@@ -38,8 +38,25 @@ Description
 #include "fvOptions.H"
 #include "localEulerDdtScheme.H"
 #include "fvcSmooth.H"
+#include "CustomTimers.H"
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+void print_timers(List<StopWatch>& const watches, std::bool normalize=false)
+{
+    totalTime = watches.begin().getTotalTime();
+    Info<<"Time Profile: ";
+    for (List<StopWatch>::const_iterator it = watches.begin() + 1; it != watches.end(); ++it)
+    {
+        double time = it->getTotalTime();
+        if (normalize)
+        {
+            time = (time / totalTime) * 100.0;
+        }
+        Info<<"\n\t" << it->name << " (s):" << time;
+    }
+    Info<<endl;
+}
 
 int main(int argc, char *argv[])
 {
@@ -67,10 +84,68 @@ int main(int argc, char *argv[])
 
     Info<< "\nStarting time loop\n" << endl;
 
+    //declare timers
+    StopWatch totalTime;
+    StopWatch mainLoopTime;
+    StopWatch readControlsTime;
+    StopWatch setDeltaTTime;
+    StopWatch pimpleTime;
+    StopWatch RhoEqnTime;
+    StopWatch UEqnTime;
+    StopWatch YEqnTime;
+    StopWatch EEqnTime;
+    StopWatch pEqnTime;
+    StopWatch turbEqnTime;
+    StopWatch writeTime;
+    StopWatch infoTime;
+    StopWatch rhoFetchTime;
+    StopWatch YConvectionTime;
+    StopWatch CombustionModelTime;
+    StopWatch HeatReleaseTime;
+    StopWatch QDotEvalTime;
+    StopWatch SetYInertTime;
+    StopWatch YLoopTime;
+    StopWatch TCEvalTime;
+    StopWatch ODESolveTime;
+    StopWatch JacobianEvalTime;
+    StopWatch dYdTEvalTime;
+    List<StopWatch> TimerList({
+        totalTime,
+        mainLoopTime,
+        readControlsTime,
+        setDeltaTTime,
+        pimpleTime,
+        RhoEqnTime,
+        UEqnTime,
+        YEqnTime,
+        EEqnTime,
+        pEqnTime,
+        turbEqnTime,
+        writeTime,
+        infoTime,
+        rhoFetchTime,
+        YConvectionTime,
+        CombustionModelTime,
+        HeatReleaseTime,
+        YLoopTime,
+        TCEvalTime,
+        ODESolveTime,
+        JacobianEvalTime,
+        dYdTEvalTime
+    });
+    //end
+
+    totalTime.start();
+
     while (runTime.run())
     {
-        #include "readTimeControls.H"
+        mainLoopTime.start();
 
+        readControlsTime.start();
+        #include "readTimeControls.H"
+        readControlsTime.stop();
+
+        setDeltaTTime.start()
         if (LTS)
         {
             #include "setRDeltaT.H"
@@ -80,20 +155,32 @@ int main(int argc, char *argv[])
             #include "compressibleCourantNo.H"
             #include "setDeltaT.H"
         }
+        setDeltaTTime.stop();
 
         runTime++;
 
         Info<< "Time = " << runTime.timeName() << nl << endl;
 
+        RhoEqnTime.start();
         #include "rhoEqn.H"
+        RhoEqnTime.stop();
 
+        pimpleTime.start();
         while (pimple.loop())
         {
+            UEqnTime.start();
             #include "UEqn.H"
+            UEqnTime.stop();
+
+            YEqnTime.start();
             #include "YEqn.H"
+            YEqnTime.stop();
+            EEqnTime.start();
             #include "EEqn.H"
+            EEqnTime.stop();
 
             // --- Pressure corrector loop
+            pEqnTime.start();
             while (pimple.correct())
             {
                 if (pimple.consistent())
@@ -105,22 +192,33 @@ int main(int argc, char *argv[])
                     #include "pEqn.H"
                 }
             }
+            pEqnTime.stop();
 
+            turbEqnTime.start();
             if (pimple.turbCorr())
             {
                 turbulence->correct();
             }
+            turbEqnTime.stop();
         }
+        pimpleTime.stop();
 
+        rhoFetchTime.start();
         rho = thermo.rho();
+        rhoFetchTime.end();
 
+        writeTime.start();
         runTime.write();
+        writeTime.stop();
 
+        print_timers(TimerList, false);
         Info<< "ExecutionTime = " << runTime.elapsedCpuTime() << " s"
             << "  ClockTime = " << runTime.elapsedClockTime() << " s"
             << nl << endl;
     }
 
+    totalTime.stop();
+    print_timers(TimerList, true);
     Info<< "End\n" << endl;
 
     return 0;

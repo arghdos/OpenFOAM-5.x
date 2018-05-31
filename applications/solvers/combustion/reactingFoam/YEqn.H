@@ -1,3 +1,4 @@
+YConvection.start();
 tmp<fv::convectionScheme<scalar>> mvConvection
 (
     fv::convectionScheme<scalar>::New
@@ -8,12 +9,20 @@ tmp<fv::convectionScheme<scalar>> mvConvection
         mesh.divScheme("div(phi,Yi_h)")
     )
 );
+YConvection.stop();
 
 {
+    CombustionModelTimer.start();
     reaction->correct();
+    CombustionModelTimer.stop();
+    HeatReleaseTimer.start();
     Qdot = reaction->Qdot();
+    HeatReleaseTimer.stop();
+    SetYInertTime.start();
     volScalarField Yt(0.0*Y[0]);
+    SetYInertTime.stop();
 
+    YLoop.start();
     forAll(Y, i)
     {
         if (i != inertIndex && composition.active(i))
@@ -42,7 +51,10 @@ tmp<fv::convectionScheme<scalar>> mvConvection
             Yt += Yi;
         }
     }
+    YLoopTime.stop();
 
+    SetYInertTime.start();
     Y[inertIndex] = scalar(1) - Yt;
     Y[inertIndex].max(0.0);
+    SetYInertTime.stop();
 }
