@@ -42,21 +42,21 @@ Description
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
-void print_timers(List<StopWatch>& watches, bool normalize=false)
+void print_timers(List<const StopWatch*> &watches, bool normalize=false)
 {
-    double totalTime = watches.begin()->getTotalTime();
+    double totalTime = (*watches.begin())->getTotalTime();
     Info<<"Time Profile: ";
-    for (List<StopWatch>::const_iterator it = watches.begin() + 1; it != watches.end(); ++it)
+    for (List<const StopWatch*>::const_iterator it = watches.begin() + 1; it != watches.end(); ++it)
     {
-        double time = it->getTotalTime();
+        double time = (*it)->getTotalTime();
         if (normalize)
         {
             time = (time / totalTime) * 100.0;
-            Info<<"\n\t" << it->name() << " (%):" << time;
+            Info<<"\n\t" << (*it)->name() << " (%):" << time;
         }
         else
         {
-            Info<<"\n\t" << it->name() << " (s):" << time;
+            Info<<"\n\t" << (*it)->name() << " (s):" << time;
         }
     }
     Info<<endl;
@@ -107,30 +107,30 @@ int main(int argc, char *argv[])
     StopWatch HeatReleaseTime(string("(outer) heat release evaluation"));
     StopWatch SetYInertTime(string("inert species handling"));
     StopWatch YLoopTime(string("species loop solution"));
-    List<StopWatch> TimerList({
-        totalTime,
-        mainLoopTime,
-        readControlsTime,
-        setDeltaTTime,
-        pimpleTime,
-        RhoEqnTime,
-        UEqnTime,
-        YEqnTime,
-        EEqnTime,
-        pEqnTime,
-        turbEqnTime,
-        writeTime,
-        rhoFetchTime,
-        YConvectionTime,
-        CombustionModelTime,
-        HeatReleaseTime,
-        YLoopTime,
-        TCEvalTime,
-        ODESolveTime,
-        JacobianEvalTime,
-        dYdTEvalTime,
-        ReactionRateEvalTime,
-        OmegaEvalTime
+    List<const StopWatch*> TimerList({
+        &totalTime,
+        &mainLoopTime,
+        &readControlsTime,
+        &setDeltaTTime,
+        &pimpleTime,
+        &RhoEqnTime,
+        &UEqnTime,
+        &YEqnTime,
+        &EEqnTime,
+        &pEqnTime,
+        &turbEqnTime,
+        &writeTime,
+        &rhoFetchTime,
+        &YConvectionTime,
+        &CombustionModelTime,
+        &HeatReleaseTime,
+        &YLoopTime,
+        &TCEvalTime,
+        &ODESolveTime,
+        &JacobianEvalTime,
+        &dYdTEvalTime,
+        &ReactionRateEvalTime,
+        &OmegaEvalTime
     });
     //end
 
