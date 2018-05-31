@@ -168,7 +168,67 @@ int main(int argc, char *argv[])
             UEqnTime.stop();
 
             YEqnTime.start();
-            #include "YEqn.H"
+            // begin copy-pasted YEqn to avoid annoying inclusion of
+            // timers
+            YConvectionTime.start();
+            tmp<fv::convectionScheme<scalar>> mvConvection
+            (
+                fv::convectionScheme<scalar>::New
+                (
+                    mesh,
+                    fields,
+                    phi,
+                    mesh.divScheme("div(phi,Yi_h)")
+                )
+            );
+            YConvectionTime.stop();
+            {
+                CombustionModelTime.start();
+                reaction->correct();
+                CombustionModelTime.stop();
+                HeatReleaseTime.start();
+                Qdot = reaction->Qdot();
+                HeatReleaseTime.stop();
+                SetYInertTime.start();
+                volScalarField Yt(0.0*Y[0]);
+                SetYInertTime.stop();
+
+                YLoopTime.start();
+                forAll(Y, i)
+                {
+                    if (i != inertIndex && composition.active(i))
+                    {
+                        volScalarField& Yi = Y[i];
+
+                        fvScalarMatrix YiEqn
+                        (
+                            fvm::ddt(rho, Yi)
+                          + mvConvection->fvmDiv(phi, Yi)
+                          - fvm::laplacian(turbulence->muEff(), Yi)
+                         ==
+                            reaction->R(Yi)
+                          + fvOptions(rho, Yi)
+                        );
+
+                        YiEqn.relax();
+
+                        fvOptions.constrain(YiEqn);
+
+                        YiEqn.solve(mesh.solver("Yi"));
+
+                        fvOptions.correct(Yi);
+
+                        Yi.max(0.0);
+                        Yt += Yi;
+                    }
+                }
+                YLoopTime.stop();
+
+                SetYInertTime.start();
+                Y[inertIndex] = scalar(1) - Yt;
+                Y[inertIndex].max(0.0);
+                SetYInertTime.stop();
+            }
             YEqnTime.stop();
             EEqnTime.start();
             #include "EEqn.H"

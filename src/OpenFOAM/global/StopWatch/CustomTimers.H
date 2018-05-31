@@ -2,38 +2,41 @@
 #define CUSTOMTIMERS_H
 
 //declare timers
-class Foam::StopWatch;
-extern Foam::StopWatch totalTime;
-extern Foam::StopWatch mainLoopTime;
-extern Foam::StopWatch readControlsTime;
-extern Foam::StopWatch setDeltaTTime;
-extern Foam::StopWatch pimpleTime;
-extern Foam::StopWatch RhoEqnTime;
-extern Foam::StopWatch UEqnTime;
-extern Foam::StopWatch YEqnTime;
-extern Foam::StopWatch EEqnTime;
-extern Foam::StopWatch pEqnTime;
-extern Foam::StopWatch turbEqnTime;
-extern Foam::StopWatch writeTime;
-extern Foam::StopWatch infoTime;
-extern Foam::StopWatch rhoFetchTime;
-// equation specific timers
-// Y-eqn
-extern Foam::StopWatch YConvectionTime;
-extern Foam::StopWatch CombustionModelTime;
-extern Foam::StopWatch HeatReleaseTime;
-extern Foam::StopWatch SetYInertTime;
-extern Foam::StopWatch YLoopTime;
-//- chemistry model timers
-//- the internal clock for qdot eval
-extern Foam::StopWatch QDotEvalTime;
-//- chemical time scale eval
-extern Foam::StopWatch TCEvalTime;
-// ODE-solver timers
-extern Foam::StopWatch ODESolveTime;
-extern Foam::StopWatch JacobianEvalTime;
-extern Foam::StopWatch dYdTEvalTime;
-extern Foam::StopWatch ReactionRateEvalTime;
-extern Foam::StopWatch OmegaEvalTime;
+namespace Foam
+{
+    class StopWatch;
+    extern StopWatch totalTime;
+    extern StopWatch mainLoopTime;
+    extern StopWatch readControlsTime;
+    extern StopWatch setDeltaTTime;
+    extern StopWatch pimpleTime;
+    extern StopWatch RhoEqnTime;
+    extern StopWatch UEqnTime;
+    extern StopWatch YEqnTime;
+    extern StopWatch EEqnTime;
+    extern StopWatch pEqnTime;
+    extern StopWatch turbEqnTime;
+    extern StopWatch writeTime;
+    extern StopWatch infoTime;
+    extern StopWatch rhoFetchTime;
+    // equation specific timers
+    // Y-eqn
+    extern StopWatch YConvectionTime;
+    extern StopWatch CombustionModelTime;
+    extern StopWatch HeatReleaseTime;
+    extern StopWatch SetYInertTime;
+    extern StopWatch YLoopTime;
+    //- chemistry model timers
+    //- the internal clock for qdot eval
+    extern StopWatch QDotEvalTime;
+    //- chemical time scale eval
+    extern StopWatch TCEvalTime;
+    // ODE-solver timers
+    extern StopWatch ODESolveTime;
+    extern StopWatch JacobianEvalTime;
+    extern StopWatch dYdTEvalTime;
+    extern StopWatch ReactionRateEvalTime;
+    extern StopWatch OmegaEvalTime;
+}
 
 #endif
