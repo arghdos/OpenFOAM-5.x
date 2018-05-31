@@ -2,7 +2,7 @@
 #define STOPWATCH_H
 
 #include "string.H"
-#include "clockTime.H"
+#include "clock.H"
 
 namespace Foam
 {
@@ -10,7 +10,7 @@ namespace Foam
     {
         private:
             string _name;
-            clockTime timer;
+            clock timer;
             double totalTime;
         public:
             StopWatch()
@@ -26,7 +26,7 @@ namespace Foam
             void start()
             {
                 // init new clock
-                this->timer = clockTime();
+                this->timer = clock();
             }
             void stop()
             {
