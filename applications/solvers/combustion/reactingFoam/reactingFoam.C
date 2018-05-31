@@ -42,11 +42,11 @@ Description
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
-void print_timers(List<Foam::StopWatch>& watches, bool normalize=false)
+void print_timers(List<StopWatch>& watches, bool normalize=false)
 {
-    double totalTime = watches.begin().getTotalTime();
+    double totalTime = watches.begin()->getTotalTime();
     Info<<"Time Profile: ";
-    for (List<Foam::StopWatch>::const_iterator it = watches.begin() + 1; it != watches.end(); ++it)
+    for (List<StopWatch>::const_iterator it = watches.begin() + 1; it != watches.end(); ++it)
     {
         double time = it->getTotalTime();
         if (normalize)
@@ -85,25 +85,25 @@ int main(int argc, char *argv[])
     Info<< "\nStarting time loop\n" << endl;
 
     //declare timers
-    Foam::StopWatch totalTime(Foam::string("total runtime"));
-    Foam::StopWatch mainLoopTime(Foam::string("main time-loop"));
-    Foam::StopWatch readControlsTime(Foam::string("read controls"));
-    Foam::StopWatch setDeltaTTime(Foam::string("set timestep"));
-    Foam::StopWatch pimpleTime(Foam::string("pimple loop"));
-    Foam::StopWatch RhoEqnTime(Foam::string("density equation"));
-    Foam::StopWatch UEqnTime(Foam::string("velocity equations"));
-    Foam::StopWatch YEqnTime(Foam::string("species equations"));
-    Foam::StopWatch EEqnTime(Foam::string("energy equation"));
-    Foam::StopWatch pEqnTime(Foam::string("pressure equation"));
-    Foam::StopWatch turbEqnTime(Foam::string("turbulence equation"));
-    Foam::StopWatch writeTime(Foam::string("write time"));
-    Foam::StopWatch rhoFetchTime(Foam::string("read density"));
-    Foam::StopWatch YConvectionTime(Foam::string("species convection initialization"));
-    Foam::StopWatch CombustionModelTime(Foam::string("combustion mode evaluation"));
-    Foam::StopWatch HeatReleaseTime(Foam::string("(outer) heat release evaluation"));
-    Foam::StopWatch SetYInertTime(Foam::string("inert species handling"));
-    Foam::StopWatch YLoopTime(Foam::string("species loop solution"));
-    List<Foam::StopWatch> TimerList({
+    StopWatch totalTime(string("total runtime"));
+    StopWatch mainLoopTime(string("main time-loop"));
+    StopWatch readControlsTime(string("read controls"));
+    StopWatch setDeltaTTime(string("set timestep"));
+    StopWatch pimpleTime(string("pimple loop"));
+    StopWatch RhoEqnTime(string("density equation"));
+    StopWatch UEqnTime(string("velocity equations"));
+    StopWatch YEqnTime(string("species equations"));
+    StopWatch EEqnTime(string("energy equation"));
+    StopWatch pEqnTime(string("pressure equation"));
+    StopWatch turbEqnTime(string("turbulence equation"));
+    StopWatch writeTime(string("write time"));
+    StopWatch rhoFetchTime(string("read density"));
+    StopWatch YConvectionTime(string("species convection initialization"));
+    StopWatch CombustionModelTime(string("combustion mode evaluation"));
+    StopWatch HeatReleaseTime(string("(outer) heat release evaluation"));
+    StopWatch SetYInertTime(string("inert species handling"));
+    StopWatch YLoopTime(string("species loop solution"));
+    List<StopWatch> TimerList({
         totalTime,
         mainLoopTime,
         readControlsTime,
@@ -140,7 +140,7 @@ int main(int argc, char *argv[])
         #include "readTimeControls.H"
         readControlsTime.stop();
 
-        setDeltaTTime.start()
+        setDeltaTTime.start();
         if (LTS)
         {
             #include "setRDeltaT.H"
