@@ -19,14 +19,16 @@ extern Foam::StopWatch rhoFetchTime;
 extern Foam::StopWatch YConvectionTime;
 extern Foam::StopWatch CombustionModelTime;
 extern Foam::StopWatch HeatReleaseTime;
-//- the internal clock for qdot eval
-extern Foam::StopWatch QDotEvalTime;
 extern Foam::StopWatch SetYInertTime;
 extern Foam::StopWatch YLoopTime;
+//- chemistry model timers
+//- the internal clock for qdot eval
+extern Foam::StopWatch QDotEvalTime;
 //- chemical time scale eval
 extern Foam::StopWatch TCEvalTime;
-
 // ODE-solver timers
 extern Foam::StopWatch ODESolveTime;
 extern Foam::StopWatch JacobianEvalTime;
 extern Foam::StopWatch dYdTEvalTime;
+extern Foam::StopWatch ReactionRateEvalTime;
+extern Foam::StopWatch OmegaEvalTime;

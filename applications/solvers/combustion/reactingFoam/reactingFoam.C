@@ -85,30 +85,24 @@ int main(int argc, char *argv[])
     Info<< "\nStarting time loop\n" << endl;
 
     //declare timers
-    Foam::StopWatch totalTime;
-    Foam::StopWatch mainLoopTime;
-    Foam::StopWatch readControlsTime;
-    Foam::StopWatch setDeltaTTime;
-    Foam::StopWatch pimpleTime;
-    Foam::StopWatch RhoEqnTime;
-    Foam::StopWatch UEqnTime;
-    Foam::StopWatch YEqnTime;
-    Foam::StopWatch EEqnTime;
-    Foam::StopWatch pEqnTime;
-    Foam::StopWatch turbEqnTime;
-    Foam::StopWatch writeTime;
-    Foam::StopWatch infoTime;
-    Foam::StopWatch rhoFetchTime;
-    Foam::StopWatch YConvectionTime;
-    Foam::StopWatch CombustionModelTime;
-    Foam::StopWatch HeatReleaseTime;
-    Foam::StopWatch QDotEvalTime;
-    Foam::StopWatch SetYInertTime;
-    Foam::StopWatch YLoopTime;
-    Foam::StopWatch TCEvalTime;
-    Foam::StopWatch ODESolveTime;
-    Foam::StopWatch JacobianEvalTime;
-    Foam::StopWatch dYdTEvalTime;
+    Foam::StopWatch totalTime("total runtime");
+    Foam::StopWatch mainLoopTime("main time-loop");
+    Foam::StopWatch readControlsTime("read controls");
+    Foam::StopWatch setDeltaTTime("set timestep");
+    Foam::StopWatch pimpleTime("pimple loop");
+    Foam::StopWatch RhoEqnTime("density equation");
+    Foam::StopWatch UEqnTime("velocity equations");
+    Foam::StopWatch YEqnTime("species equations");
+    Foam::StopWatch EEqnTime("energy equation");
+    Foam::StopWatch pEqnTime("pressure equation");
+    Foam::StopWatch turbEqnTime("turbulence equation");
+    Foam::StopWatch writeTime("write time");
+    Foam::StopWatch rhoFetchTime("read density");
+    Foam::StopWatch YConvectionTime("species convection initialization");
+    Foam::StopWatch CombustionModelTime("combustion mode evaluation");
+    Foam::StopWatch HeatReleaseTime("(outer) heat release evaluation");
+    Foam::StopWatch SetYInertTime("inert species handling");
+    Foam::StopWatch YLoopTime("species loop solution");
     List<Foam::StopWatch> TimerList({
         totalTime,
         mainLoopTime,
@@ -122,7 +116,6 @@ int main(int argc, char *argv[])
         pEqnTime,
         turbEqnTime,
         writeTime,
-        infoTime,
         rhoFetchTime,
         YConvectionTime,
         CombustionModelTime,
@@ -131,7 +124,9 @@ int main(int argc, char *argv[])
         TCEvalTime,
         ODESolveTime,
         JacobianEvalTime,
-        dYdTEvalTime
+        dYdTEvalTime,
+        ReactionRateEvalTime,
+        OmegaEvalTime
     });
     //end
 
