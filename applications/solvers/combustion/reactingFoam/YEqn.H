@@ -1,5 +1,3 @@
-#include "CustomTimers.H"
-YConvectionTime.start();
 tmp<fv::convectionScheme<scalar>> mvConvection
 (
     fv::convectionScheme<scalar>::New
@@ -10,20 +8,12 @@ tmp<fv::convectionScheme<scalar>> mvConvection
         mesh.divScheme("div(phi,Yi_h)")
     )
 );
-YConvectionTime.stop();
 
 {
-    CombustionModelTime.start();
     reaction->correct();
-    CombustionModelTime.stop();
-    HeatReleaseTime.start();
     Qdot = reaction->Qdot();
-    HeatReleaseTime.stop();
-    SetYInertTime.start();
     volScalarField Yt(0.0*Y[0]);
-    SetYInertTime.stop();
 
-    YLoopTime.start();
     forAll(Y, i)
     {
         if (i != inertIndex && composition.active(i))
@@ -52,10 +42,7 @@ YConvectionTime.stop();
             Yt += Yi;
         }
     }
-    YLoopTime.stop();
 
-    SetYInertTime.start();
     Y[inertIndex] = scalar(1) - Yt;
     Y[inertIndex].max(0.0);
-    SetYInertTime.stop();
 }
