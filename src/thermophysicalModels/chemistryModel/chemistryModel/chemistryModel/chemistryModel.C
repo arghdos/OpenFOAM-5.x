@@ -32,6 +32,8 @@ License
 // * * * * * * * * * * * * * * * * Constructors  * * * * * * * * * * * * * * //
 
 // create timers
+#ifndef CHEMISTRY_MODEL_TIMERS
+#define CHEMISTRY_MODEL_TIMERS
 Foam::StopWatch QDotEvalTime("heat-release rate evaluation");
 //- chemical time scale eval
 Foam::StopWatch TCEvalTime("chemical time-scale evaluation");
@@ -41,6 +43,7 @@ Foam::StopWatch JacobianEvalTime("jacobian evaluation");
 Foam::StopWatch dYdTEvalTime("dydt evaluation");
 Foam::StopWatch ReactionRateEvalTime("reaction rate evaluation");
 Foam::StopWatch OmegaEvalTime("species rate evaluation");
+#endif
 
 template<class CompType, class ThermoType>
 Foam::chemistryModel<CompType, ThermoType>::chemistryModel
