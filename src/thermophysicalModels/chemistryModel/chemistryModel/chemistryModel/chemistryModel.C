@@ -143,7 +143,7 @@ void Foam::chemistryModel<CompType, ThermoType>::omega
             dcdt[si] += sr*omegai;
         }
     }
-    OmegaEvalTime.end();
+    OmegaEvalTime.stop();
 }
 
 
