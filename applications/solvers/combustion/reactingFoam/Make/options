@@ -12,7 +12,7 @@ EXE_INC = \
     -I$(LIB_SRC)/thermophysicalModels/chemistryModel/lnInclude \
     -I$(LIB_SRC)/ODE/lnInclude \
     -I$(LIB_SRC)/combustionModels/lnInclude \
-    -I$(LIB_SRC)/OpenFOAM/global/StopWatch
+    -I$(LIB_SRC)/OpenFOAM/lnInclude
 
 EXE_LIBS = \
     -lfiniteVolume \
