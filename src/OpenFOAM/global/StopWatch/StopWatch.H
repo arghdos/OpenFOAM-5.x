@@ -8,14 +8,14 @@ namespace Foam
     class StopWatch
     {
         private:
-            std::string name;
+            std::string _name;
             clockTime timer;
             double totalTime;
         public:
-            StopWatch(std::string name)
+            StopWatch(std::string myname)
             {
                 this->totalTime = 0;
-                this->name = name;
+                this->_name = myname;
             }
             void start()
             {
@@ -32,7 +32,7 @@ namespace Foam
             }
             std::string name() const
             {
-                return this->name;
+                return this->_name;
             }
     };
 }
