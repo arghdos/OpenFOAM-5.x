@@ -30,7 +30,7 @@ namespace Foam
             }
             void stop()
             {
-                this->totalTime += this->timer.elapsedTime();
+                this->totalTime += this->timer.elapsedClockTime();
             }
             double getTotalTime() const
             {
