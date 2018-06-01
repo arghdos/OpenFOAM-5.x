@@ -130,7 +130,10 @@ int main(int argc, char *argv[])
         &JacobianEvalTime,
         &dYdTEvalTime,
         &ReactionRateEvalTime,
-        &OmegaEvalTime
+        &OmegaEvalTime,
+        &CombustionCorrectTime,
+        &CombustionHeatReleaseTime,
+        &CombustionFuelConsumptionTime
     });
     //end
 

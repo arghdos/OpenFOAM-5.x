@@ -38,6 +38,10 @@ namespace Foam
     extern StopWatch dYdTEvalTime;
     extern StopWatch ReactionRateEvalTime;
     extern StopWatch OmegaEvalTime;
+    // combustion model timers
+    extern StopWatch CombustionCorrectTime;
+    extern StopWatch CombustionHeatReleaseTime;
+    extern StopWatch CombustionFuelConsumptionTime;
 }
 
 #endif

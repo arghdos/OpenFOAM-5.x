@@ -16,6 +16,8 @@ infinitelyFastChemistry/infinitelyFastChemistrys.C
 PaSR/PaSRs.C
 EDC/EDCs.C
 
+combustionTimers/combustionTimers.C
+
 laminar/laminars.C
 
 FSD/reactionRateFlameAreaModels/consumptionSpeed/consumptionSpeed.C

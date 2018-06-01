@@ -24,6 +24,7 @@ License
 \*---------------------------------------------------------------------------*/
 
 #include "EDC.H"
+#include "CustomTimers.H"
 
 // * * * * * * * * * * * * * * * * Constructors  * * * * * * * * * * * * * * //
 
@@ -82,6 +83,8 @@ Foam::combustionModels::EDC<Type>::~EDC()
 template<class Type>
 void Foam::combustionModels::EDC<Type>::correct()
 {
+
+    CombustionCorrectTime.start();
     if (this->active())
     {
         tmp<volScalarField> tepsilon(this->turbulence().epsilon());
@@ -171,6 +174,7 @@ void Foam::combustionModels::EDC<Type>::correct()
 
         this->chemistryPtr_->solve(tauStar);
     }
+    CombustionCorrectTime.stop();
 }
 
 
@@ -178,7 +182,10 @@ template<class Type>
 Foam::tmp<Foam::fvScalarMatrix>
 Foam::combustionModels::EDC<Type>::R(volScalarField& Y) const
 {
-    return kappa_*laminar<Type>::R(Y);
+    CombustionFuelConsumptionTime.start();
+    Foam::tmp<Foam::fvScalarMatrix> retv = kappa_*laminar<Type>::R(Y);
+    CombustionFuelConsumptionTime.stop();
+    return retv;
 }
 
 
@@ -186,6 +193,7 @@ template<class Type>
 Foam::tmp<Foam::volScalarField>
 Foam::combustionModels::EDC<Type>::Qdot() const
 {
+    CombustionHeatReleaseTime.start();
     tmp<volScalarField> tQdot
     (
         new volScalarField
@@ -208,6 +216,7 @@ Foam::combustionModels::EDC<Type>::Qdot() const
     {
         tQdot.ref() = kappa_*this->chemistryPtr_->Qdot();
     }
+    CombustionHeatReleaseTime.stop();
 
     return tQdot;
 }
