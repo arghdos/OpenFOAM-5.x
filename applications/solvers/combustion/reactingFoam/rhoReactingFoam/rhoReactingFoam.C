@@ -40,6 +40,27 @@ Description
 #include "localEulerDdtScheme.H"
 #include "fvcSmooth.H"
 
+
+void print_timers(List<const StopWatch*> &watches, bool normalize=false)
+{
+    double totalTime = (*watches.begin())->getTotalTime();
+    Info<<"Time Profile: ";
+    for (List<const StopWatch*>::const_iterator it = watches.begin() + 1; it != watches.end(); ++it)
+    {
+        double time = (*it)->getTotalTime();
+        if (normalize)
+        {
+            time = (time / totalTime) * 100.0;
+            Info<<"\n\t" << (*it)->name() << " (%):" << time;
+        }
+        else
+        {
+            Info<<"\n\t" << (*it)->name() << " (s):" << time;
+        }
+    }
+    Info<<endl;
+}
+
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
 int main(int argc, char *argv[])
@@ -68,10 +89,65 @@ int main(int argc, char *argv[])
 
     Info<< "\nStarting time loop\n" << endl;
 
+    //declare timers
+    StopWatch totalTime(string("total runtime"));
+    StopWatch mainLoopTime(string("main time-loop"));
+    StopWatch readControlsTime(string("read controls"));
+    StopWatch setDeltaTTime(string("set timestep"));
+    StopWatch pimpleTime(string("pimple loop"));
+    StopWatch RhoEqnTime(string("density equation"));
+    StopWatch UEqnTime(string("velocity equations"));
+    StopWatch YEqnTime(string("species equations"));
+    StopWatch EEqnTime(string("energy equation"));
+    StopWatch pEqnTime(string("pressure equation"));
+    StopWatch turbEqnTime(string("turbulence equation"));
+    StopWatch writeTime(string("write time"));
+    StopWatch rhoFetchTime(string("read density"));
+    StopWatch YConvectionTime(string("species convection initialization"));
+    StopWatch CombustionModelTime(string("combustion mode evaluation"));
+    StopWatch HeatReleaseTime(string("(outer) heat release evaluation"));
+    StopWatch SetYInertTime(string("inert species handling"));
+    StopWatch YLoopTime(string("species loop solution"));
+    List<const StopWatch*> TimerList({
+        &totalTime,
+        &mainLoopTime,
+        &readControlsTime,
+        &setDeltaTTime,
+        &pimpleTime,
+        &RhoEqnTime,
+        &UEqnTime,
+        &YEqnTime,
+        &EEqnTime,
+        &pEqnTime,
+        &turbEqnTime,
+        &writeTime,
+        &rhoFetchTime,
+        &YConvectionTime,
+        &CombustionModelTime,
+        &HeatReleaseTime,
+        &YLoopTime,
+        &TCEvalTime,
+        &ODESolveTime,
+        &JacobianEvalTime,
+        &dYdTEvalTime,
+        &ReactionRateEvalTime,
+        &OmegaEvalTime,
+        &CombustionCorrectTime,
+        &CombustionHeatReleaseTime,
+        &CombustionFuelConsumptionTime
+    });
+
+    totalTime.start();
+
     while (runTime.run())
     {
-        #include "readTimeControls.H"
+        mainLoopTime.start();
 
+        readControlsTime.start();
+        #include "readTimeControls.H"
+        readControlsTime.stop();
+
+        setDeltaTTime.start();
         if (LTS)
         {
             #include "setRDeltaT.H"
@@ -81,21 +157,93 @@ int main(int argc, char *argv[])
             #include "compressibleCourantNo.H"
             #include "setDeltaT.H"
         }
+        setDeltaTTime.stop();
 
         runTime++;
 
         Info<< "Time = " << runTime.timeName() << nl << endl;
 
+        RhoEqnTime.start();
         #include "rhoEqn.H"
+        RhoEqnTime.stop();
 
+        pimpleTime.start();
         // --- Pressure-velocity PIMPLE corrector loop
         while (pimple.loop())
         {
+            UEqnTime.start();
             #include "UEqn.H"
-            #include "YEqn.H"
+            UEqnTime.stop();
+
+            YEqnTime.start();
+            // begin copy-pasted YEqn to avoid annoying inclusion of
+            // timers
+            YConvectionTime.start();
+            tmp<fv::convectionScheme<scalar>> mvConvection
+            (
+                fv::convectionScheme<scalar>::New
+                (
+                    mesh,
+                    fields,
+                    phi,
+                    mesh.divScheme("div(phi,Yi_h)")
+                )
+            );
+            YConvectionTime.stop();
+            {
+                CombustionModelTime.start();
+                reaction->correct();
+                CombustionModelTime.stop();
+                HeatReleaseTime.start();
+                Qdot = reaction->Qdot();
+                HeatReleaseTime.stop();
+                SetYInertTime.start();
+                volScalarField Yt(0.0*Y[0]);
+                SetYInertTime.stop();
+
+                YLoopTime.start();
+                forAll(Y, i)
+                {
+                    if (i != inertIndex && composition.active(i))
+                    {
+                        volScalarField& Yi = Y[i];
+
+                        fvScalarMatrix YiEqn
+                        (
+                            fvm::ddt(rho, Yi)
+                          + mvConvection->fvmDiv(phi, Yi)
+                          - fvm::laplacian(turbulence->muEff(), Yi)
+                         ==
+                            reaction->R(Yi)
+                          + fvOptions(rho, Yi)
+                        );
+
+                        YiEqn.relax();
+
+                        fvOptions.constrain(YiEqn);
+
+                        YiEqn.solve(mesh.solver("Yi"));
+
+                        fvOptions.correct(Yi);
+
+                        Yi.max(0.0);
+                        Yt += Yi;
+                    }
+                }
+                YLoopTime.stop();
+
+                SetYInertTime.start();
+                Y[inertIndex] = scalar(1) - Yt;
+                Y[inertIndex].max(0.0);
+                SetYInertTime.stop();
+            }
+            YEqnTime.stop();
+            EEqnTime.start();
             #include "EEqn.H"
+            EEqnTime.stop();
 
             // --- Pressure corrector loop
+            pEqnTime.start();
             while (pimple.correct())
             {
                 if (pimple.consistent())
@@ -108,21 +256,34 @@ int main(int argc, char *argv[])
                 }
             }
 
+            pEqnTime.stop();
+
+            turbEqnTime.start();
             if (pimple.turbCorr())
             {
                 turbulence->correct();
             }
+            turbEqnTime.stop();
         }
 
+        pimpleTime.stop();
+
+        rhoFetchTime.start();
         rho = thermo.rho();
+        rhoFetchTime.stop();
 
+        writeTime.start();
         runTime.write();
+        writeTime.stop();
 
+        print_timers(TimerList, false);
         Info<< "ExecutionTime = " << runTime.elapsedCpuTime() << " s"
             << "  ClockTime = " << runTime.elapsedClockTime() << " s"
             << nl << endl;
     }
 
+    totalTime.stop();
+    print_timers(TimerList, true);
     Info<< "End\n" << endl;
 
     return 0;
