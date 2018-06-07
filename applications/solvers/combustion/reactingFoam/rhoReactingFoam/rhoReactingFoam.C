@@ -39,6 +39,7 @@ Description
 #include "fvOptions.H"
 #include "localEulerDdtScheme.H"
 #include "fvcSmooth.H"
+#include "CustomTimers.H"
 
 
 void print_timers(List<const StopWatch*> &watches, bool normalize=false)
