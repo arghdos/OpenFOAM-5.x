@@ -35,6 +35,7 @@ Description
 #include "rhoReactionThermo.H"
 
 #include "StandardChemistryModel.H"
+#include "StandardChemistryModelIPM.H"
 #include "TDACChemistryModel.H"
 #include "thermoPhysicsTypes.H"
 
@@ -46,7 +47,7 @@ namespace Foam
     makeChemistryModel(psiReactionThermo);
     makeChemistryModel(rhoReactionThermo);
 
-    // Chemistry moldels based on sensibleEnthalpy
+     // Chemistry models based on sensibleEnthalpy
     makeChemistryModelType
     (
         StandardChemistryModel,
@@ -160,6 +161,120 @@ namespace Foam
         constHThermoPhysics
     );
 
+    // IPM
+    makeChemistryModelType
+    (
+        StandardChemistryModelIPM,
+        psiReactionThermo,
+        constGasHThermoPhysics
+    );
+
+    makeChemistryModelType
+    (
+        StandardChemistryModelIPM,
+        psiReactionThermo,
+        gasHThermoPhysics
+    );
+
+    makeChemistryModelType
+    (
+        StandardChemistryModelIPM,
+        psiReactionThermo,
+        constIncompressibleGasHThermoPhysics
+    );
+
+    makeChemistryModelType
+    (
+        StandardChemistryModelIPM,
+        psiReactionThermo,
+        incompressibleGasHThermoPhysics
+    );
+
+    makeChemistryModelType
+    (
+        StandardChemistryModelIPM,
+        psiReactionThermo,
+        icoPoly8HThermoPhysics
+    );
+
+    makeChemistryModelType
+    (
+        StandardChemistryModelIPM,
+        psiReactionThermo,
+        constFluidHThermoPhysics
+    );
+
+    makeChemistryModelType
+    (
+        StandardChemistryModelIPM,
+        psiReactionThermo,
+        constAdiabaticFluidHThermoPhysics
+    );
+
+    makeChemistryModelType
+    (
+        StandardChemistryModelIPM,
+        psiReactionThermo,
+        constHThermoPhysics
+    );
+
+
+    makeChemistryModelType
+    (
+        StandardChemistryModelIPM,
+        rhoReactionThermo,
+        constGasHThermoPhysics
+    );
+
+    makeChemistryModelType
+    (
+        StandardChemistryModelIPM,
+        rhoReactionThermo,
+        gasHThermoPhysics
+    );
+
+    makeChemistryModelType
+    (
+        StandardChemistryModelIPM,
+        rhoReactionThermo,
+        constIncompressibleGasHThermoPhysics
+    );
+
+    makeChemistryModelType
+    (
+        StandardChemistryModelIPM,
+        rhoReactionThermo,
+        incompressibleGasHThermoPhysics
+    );
+
+    makeChemistryModelType
+    (
+        StandardChemistryModelIPM,
+        rhoReactionThermo,
+        icoPoly8HThermoPhysics
+    );
+
+    makeChemistryModelType
+    (
+        StandardChemistryModelIPM,
+        rhoReactionThermo,
+        constFluidHThermoPhysics
+    );
+
+    makeChemistryModelType
+    (
+        StandardChemistryModelIPM,
+        rhoReactionThermo,
+        constAdiabaticFluidHThermoPhysics
+    );
+
+    makeChemistryModelType
+    (
+        StandardChemistryModelIPM,
+        rhoReactionThermo,
+        constHThermoPhysics
+    );
+
 
     makeChemistryModelType
     (
@@ -275,7 +390,7 @@ namespace Foam
     );
 
 
-    // Chemistry moldels based on sensibleInternalEnergy
+    // Chemistry models based on sensibleInternalEnergy
     makeChemistryModelType
     (
         StandardChemistryModel,
@@ -386,6 +501,121 @@ namespace Foam
     makeChemistryModelType
     (
         StandardChemistryModel,
+        rhoReactionThermo,
+        constEThermoPhysics
+    );
+
+    // IPM
+    makeChemistryModelType
+    (
+        StandardChemistryModelIPM,
+        psiReactionThermo,
+        constGasEThermoPhysics
+    );
+
+    makeChemistryModelType
+    (
+        StandardChemistryModelIPM,
+        psiReactionThermo,
+        gasEThermoPhysics
+    );
+
+    makeChemistryModelType
+    (
+        StandardChemistryModelIPM,
+        psiReactionThermo,
+        constIncompressibleGasEThermoPhysics
+    );
+
+    makeChemistryModelType
+    (
+        StandardChemistryModelIPM,
+        psiReactionThermo,
+        incompressibleGasEThermoPhysics
+    );
+
+    makeChemistryModelType
+    (
+        StandardChemistryModelIPM,
+        psiReactionThermo,
+        icoPoly8EThermoPhysics
+    );
+
+    makeChemistryModelType
+    (
+        StandardChemistryModelIPM,
+        psiReactionThermo,
+        constFluidEThermoPhysics
+    );
+
+    makeChemistryModelType
+    (
+        StandardChemistryModelIPM,
+        psiReactionThermo,
+        constAdiabaticFluidEThermoPhysics
+    );
+
+    makeChemistryModelType
+    (
+        StandardChemistryModelIPM,
+        psiReactionThermo,
+        constEThermoPhysics
+    );
+
+
+
+    makeChemistryModelType
+    (
+        StandardChemistryModelIPM,
+        rhoReactionThermo,
+        constGasEThermoPhysics
+    );
+
+    makeChemistryModelType
+    (
+        StandardChemistryModelIPM,
+        rhoReactionThermo,
+        gasEThermoPhysics
+    );
+
+    makeChemistryModelType
+    (
+        StandardChemistryModelIPM,
+        rhoReactionThermo,
+        constIncompressibleGasEThermoPhysics
+    );
+
+    makeChemistryModelType
+    (
+        StandardChemistryModelIPM,
+        rhoReactionThermo,
+        incompressibleGasEThermoPhysics
+    );
+
+    makeChemistryModelType
+    (
+        StandardChemistryModelIPM,
+        rhoReactionThermo,
+        icoPoly8EThermoPhysics
+    );
+
+    makeChemistryModelType
+    (
+        StandardChemistryModelIPM,
+        rhoReactionThermo,
+        constFluidEThermoPhysics
+    );
+
+    makeChemistryModelType
+    (
+        StandardChemistryModelIPM,
+        rhoReactionThermo,
+        constAdiabaticFluidEThermoPhysics
+    );
+
+    makeChemistryModelType
+    (
+        StandardChemistryModelIPM,
         rhoReactionThermo,
         constEThermoPhysics
     );
@@ -504,5 +734,4 @@ namespace Foam
         constEThermoPhysics
     );
 }
-
 // ************************************************************************* //
