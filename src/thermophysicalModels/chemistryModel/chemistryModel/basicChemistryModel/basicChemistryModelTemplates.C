@@ -77,10 +77,7 @@ Foam::autoPtr<ChemistryModel> Foam::basicChemistryModel::New
     (
         chemistryTypeDict.lookupOrDefault<word>
         (
-            "method",
-            chemistryTypeDict.lookupOrDefault<bool>("TDAC", false)
-          ? "TDAC"
-          : "standard"
+            "method", "standard"
         )
     );
 
